@@ -36,3 +36,22 @@ jobs:
           protocol: ftps
           local-dir: ./out/
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
+
+      # Diagnostic only — checks the live site right after upload so a
+      # broken path/permissions/caching issue shows up in this log instead
+      # of requiring someone to check the browser by hand. Safe to remove
+      # once the site is confirmed stable.
+      - name: Check live site
+        if: always()
+        run: |
+          sleep 10
+          for url in \
+            "https://wassermech.com/" \
+            "https://wassermech.com/about" \
+            "https://wassermech.com/assets/wassermech-logo-trimmed.png" \
+            "https://wassermech.com/assets/fluenta-bathroom.png" \
+            "https://wassermech.com/assets/pestan-blue-fittings.png"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L "$url")
+            size=$(curl -s -o /dev/null -w "%{size_download}" -L "$url")
+            echo "$code  ${size} bytes  $url"
+          done
