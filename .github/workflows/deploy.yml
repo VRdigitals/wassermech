@@ -45,6 +45,7 @@ jobs:
         if: always()
         run: |
           sleep 10
+          echo "== Plain curl (no referer, curl User-Agent) =="
           for url in \
             "https://wassermech.com/" \
             "https://wassermech.com/about" \
@@ -55,3 +56,22 @@ jobs:
             size=$(curl -s -o /dev/null -w "%{size_download}" -L "$url")
             echo "$code  ${size} bytes  $url"
           done
+
+          echo ""
+          echo "== Browser-like request (real UA + same-origin referer, checking for hotlink protection) =="
+          for url in \
+            "https://wassermech.com/assets/fluenta-bathroom.png" \
+            "https://wassermech.com/assets/pestan-blue-fittings.png"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -L \
+              -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
+              -e "https://wassermech.com/" \
+              "$url")
+            echo "$code  $url"
+          done
+
+          echo ""
+          echo "== Response headers for one image (Content-Type is the key one) =="
+          curl -s -D - -o /dev/null -L \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" \
+            -e "https://wassermech.com/" \
+            "https://wassermech.com/assets/fluenta-bathroom.png"
