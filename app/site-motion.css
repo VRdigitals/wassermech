@@ -1,0 +1,11 @@
+/* Short, responsive interactions; no perpetual motion or scroll interception. */
+.collection-link svg,.text-link svg,.wm-primary svg,.wm-secondary svg,.download-card>svg{transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.collection-card>a:is(:hover,:focus-visible) .collection-link svg,.text-link:is(:hover,:focus-visible) svg,.wm-primary:is(:hover,:focus-visible) svg{transform:translate(3px,-3px)}
+.wm-secondary:is(:hover,:focus-visible) svg,.download-card:is(:hover,:focus-visible)>svg{transform:translateY(3px)}
+.partner-logo img{transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+@media(hover:hover) and (pointer:fine){.partner-logo:hover img{transform:translateY(-4px) scale(1.035)}}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .collection-link svg,.text-link svg,.wm-primary svg,.wm-secondary svg,.download-card>svg,.partner-logo img{transform:none!important}
+}
